@@ -1,26 +1,14 @@
-import { GetServerSideProps } from 'next';
+import { headers } from 'next/headers';
 
-type Props = {
-  isMobile: boolean;
-};
+export default function HomePage() {
+  const device = headers().get('x-device');
 
-export default function Home({ isMobile }: Props) {
   return (
-    <div style={{
-      fontFamily: 'sans-serif',
-      textAlign: 'center',
-      marginTop: '4rem',
-    }}>
-      <h1>{isMobile ? '📱 Mobile Layout' : '🖥️ Desktop Layout'}</h1>
+    <div className="text-center mt-20 text-2xl font-bold">
+      {device === 'mobile' && '📱 Mobile Layout'}
+      {device === 'tablet' && '📲 Tablet Layout'}
+      {device === 'desktop' && '🖥️ Desktop Layout'}
+      {!device && '🤷‍♂️ Device Unknown'}
     </div>
   );
 }
-
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  const deviceType = req.headers['x-device-type'] || 'desktop';
-  return {
-    props: {
-      isMobile: deviceType === 'mweb',
-    },
-  };
-};
