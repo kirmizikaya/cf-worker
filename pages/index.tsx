@@ -1,14 +1,23 @@
-import { headers } from 'next/headers';
+import { GetServerSideProps } from 'next';
 
-export default function HomePage() {
-  const device = headers().get('x-device');
+type Props = {
+  device: string | null;
+};
 
+export const getServerSideProps: GetServerSideProps<Props> = async ({ req }) => {
+  const device = req.headers['x-device'] || null;
+
+  return {
+    props: {
+      device: typeof device === 'string' ? device : null,
+    },
+  };
+};
+
+export default function Home({ device }: Props) {
   return (
-    <div className="text-center mt-20 text-2xl font-bold">
-      {device === 'mobile' && '📱 Mobile Layout'}
-      {device === 'tablet' && '📲 Tablet Layout'}
-      {device === 'desktop' && '🖥️ Desktop Layout'}
-      {!device && '🤷‍♂️ Device Unknown'}
+    <div>
+      <h1>Gelen cihaz: {device}</h1>
     </div>
   );
 }
