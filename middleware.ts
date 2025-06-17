@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+/*import { NextRequest, NextResponse } from 'next/server';
 
 export function middleware(request: NextRequest) {
   const url = request.nextUrl;
@@ -18,3 +18,25 @@ export function middleware(request: NextRequest) {
 export const config = {
   matcher: ['/', '/(.*)'],
 };
+*/
+
+import { NextRequest, NextResponse } from 'next/server';
+
+export function middleware(req: NextRequest) {
+  const url = req.nextUrl.clone();
+  const device = url.searchParams.get('device');
+
+  if (device) {
+    // URL'den `device` parametresini kaldır
+    url.searchParams.delete('device');
+
+    // Cihaz bilgisini header olarak ilet
+    const res = NextResponse.rewrite(url);
+    res.headers.set('x-device', device);
+
+    return res;
+  }
+
+  return NextResponse.next();
+}
+
